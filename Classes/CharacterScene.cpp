@@ -1,7 +1,5 @@
 #include "CharacterScene.h"
 
-USING_NS_CC;
-
 Scene* CharacterScene::createScene()
 {
     // 'scene' is an autorelease object
@@ -26,6 +24,19 @@ bool CharacterScene::init()
     {
         return false;
     }
+    
+    auto director = Director::getInstance();
+    auto glView = director->getOpenGLView();
+    auto winSize = glView->getDesignResolutionSize();
+    
+    auto back = Sprite::create("bg_main.png");
+    back->setPosition(Point(winSize.width / 2, winSize.height / 2));
+    this->addChild(back);
+    
+    _characterBg = Sprite::create("bg_1.png");
+    _characterBg->setAnchorPoint(Point(0.5f, 1));
+    _characterBg->setPosition(Point(winSize.width / 2, winSize.height - 15));
+    back->addChild(_characterBg);
    
     return true;
 }
