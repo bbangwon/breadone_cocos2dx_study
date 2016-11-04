@@ -10,10 +10,9 @@ public:
 
     virtual bool init();
     
-    // implement the "static create()" method manually
     CREATE_FUNC(StartScene);
-
-	void onClickButton2(Ref *object);
+    
+    void onClickButton2(Ref *object);
 };
 
 #endif // __START_SCENE_H__
