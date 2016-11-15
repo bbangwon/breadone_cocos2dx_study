@@ -69,22 +69,22 @@ bool CharacterScene::init()
     float width;
     float height;
     
-    auto menu2Home = MenuItemImage::create("menu_home.png", "menu_home_on.png");
+    auto menu2Home = MenuItemImage::create("menu_home.png", "menu_home_on.png", CC_CALLBACK_1(CharacterScene::onClickHome, this));
     width = menu2Home->getContentSize().width;
     height = menu2Home->getContentSize().height;
     x = width / 2;
     y = height / 2;
     menu2Home->setPosition(Point(x,y));
     
-    auto menu2Random = MenuItemImage::create("menu_random.png", "menu_random_on.png");
+    auto menu2Random = MenuItemImage::create("menu_random.png", "menu_random_on.png", CC_CALLBACK_1(CharacterScene::onClickRandom, this));
     x = menu2Home->getPositionX() + width;
     menu2Random->setPosition(Point(x,y));
     
-    auto menu2Save = MenuItemImage::create("menu_save.png", "menu_save_on.png");
+    auto menu2Save = MenuItemImage::create("menu_save.png", "menu_save_on.png", CC_CALLBACK_1(CharacterScene::onClickSave, this));
     x = menu2Random->getPositionX() + width;
     menu2Save->setPosition(Point(x,y));
     
-    auto menu2Gallery = MenuItemImage::create("menu_gallary.png","menu_gallary_on.png");
+    auto menu2Gallery = MenuItemImage::create("menu_gallary.png","menu_gallary_on.png", CC_CALLBACK_1(CharacterScene::onClickGallery, this));
     x = menu2Save->getPositionX() + width;
     menu2Gallery->setPosition(Point(x,y));
     
@@ -95,7 +95,22 @@ bool CharacterScene::init()
     return true;
 }
 
-void CharacterScene::onClickMenu(Ref *object)
-{
+void CharacterScene::onClickMenu(Ref *object){
     log("onClickMenu");
+}
+
+void CharacterScene::onClickHome(Ref *object){
+    log("onClickHome");
+}
+
+void CharacterScene::onClickRandom(Ref *object){
+    log("onClickRandom");
+}
+
+void CharacterScene::onClickSave(Ref *object){
+    log("onClickSave");
+}
+
+void CharacterScene::onClickGallery(Ref *object){
+    log("onClickGallery");
 }

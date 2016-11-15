@@ -18,6 +18,10 @@ public:
     Sprite *_characterBg;
     
     void onClickMenu(Ref *object);
+    void onClickHome(Ref *object);
+    void onClickRandom(Ref *object);
+    void onClickSave(Ref *object);
+    void onClickGallery(Ref *object);
 };
 
 #endif // __CHARACTERSCENE_H__
