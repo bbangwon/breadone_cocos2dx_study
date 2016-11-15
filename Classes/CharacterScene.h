@@ -16,6 +16,8 @@ public:
     CREATE_FUNC(CharacterScene);
     
     Sprite *_characterBg;
+    
+    void onClickMenu(Ref *object);
 };
 
 #endif // __CHARACTERSCENE_H__
