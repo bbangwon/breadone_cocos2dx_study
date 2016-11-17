@@ -1,4 +1,5 @@
 #include "CharacterScene.h"
+#include "DatabaseManager.h"
 
 Scene* CharacterScene::createScene()
 {
@@ -24,6 +25,10 @@ bool CharacterScene::init()
     {
         return false;
     }
+    
+    DatabaseManager::getInstance()->createDB();
+    DatabaseManager::getInstance()->insertDB();
+    DatabaseManager::getInstance()->selectDB();
     
     auto director = Director::getInstance();
     auto glView = director->getOpenGLView();

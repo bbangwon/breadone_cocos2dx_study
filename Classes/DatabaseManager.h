@@ -21,5 +21,7 @@ public:
 
 	static DatabaseManager *getInstance();
 	void createDB();
+    void insertDB();
+    void selectDB();
 };
 

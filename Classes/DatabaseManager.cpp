@@ -57,3 +57,32 @@ void DatabaseManager::createDB()
 	else
 		log("ERROR CODE: %d, ERROR MSG: %s", _result, _errorMSG);
 }
+void DatabaseManager::insertDB() {
+    std::string query = "insert into TB_FACE(NO) values (1), (2), (3)";
+    _result = sqlite3_exec(_sqlite, query.c_str(), nullptr, nullptr, &_errorMSG);
+    
+    if(_result == SQLITE_OK) {
+        log("insertDB SUCCESS");
+    }
+    else {
+        log("ERROR CODE: %d, ERROR MSG: %s", _result, _errorMSG);
+    }
+}
+void DatabaseManager::selectDB(){
+    std::string query = "select * from TB_FACE";
+    
+    sqlite3_stmt *stmt = nullptr;
+    _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &stmt, nullptr);
+    
+    if(_result == SQLITE_OK){
+        log("selectDB() SUCCESS");
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int no = sqlite3_column_int(stmt, 0);
+            log("no : %d", no);
+        }
+    }
+    else {
+        log("ERROR CODE: %d, ERROR MSG: %s", _result, _errorMSG);
+    }
+    sqlite3_finalize(stmt);
+}
