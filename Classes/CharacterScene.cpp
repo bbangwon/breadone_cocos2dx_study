@@ -1,5 +1,6 @@
 #include "CharacterScene.h"
 #include "DatabaseManager.h"
+#include "DevConf.h"
 
 Scene* CharacterScene::createScene()
 {
@@ -25,10 +26,17 @@ bool CharacterScene::init()
     {
         return false;
     }
-    
-    DatabaseManager::getInstance()->createDB();
-    DatabaseManager::getInstance()->insertDB();
-    DatabaseManager::getInstance()->selectDB();
+
+		auto UserDefault = UserDefault::getInstance();
+		bool isFirst = UserDefault->getBoolForKey("isFirst", true);
+
+		if (isFirst || DB_INIT) {
+			DatabaseManager::getInstance()->createDB();
+			DatabaseManager::getInstance()->insertDB();
+
+			UserDefault->setBoolForKey("isFirst", false);
+			UserDefault->flush();
+		}
     
     auto director = Director::getInstance();
     auto glView = director->getOpenGLView();
