@@ -269,6 +269,16 @@ list<head*> DatabaseManager::selectDB(string table, int no){
             pHead->color2 = Color3B(sqlite3_column_int(stmt, 7), sqlite3_column_int(stmt, 8), sqlite3_column_int(stmt, 9));
             pHead->color3 = Color3B(sqlite3_column_int(stmt, 10), sqlite3_column_int(stmt, 11), sqlite3_column_int(stmt, 12));
             pHead->color4 = Color3B(sqlite3_column_int(stmt, 13), sqlite3_column_int(stmt, 14), sqlite3_column_int(stmt, 15));
+
+			pHead->isColor = true;
+			if (table == "TB_EYE")
+				pHead->isColor = false;
+			else if (table == "TB_MOUTH")
+				pHead->isColor = false;
+			else if (table == "TB_ETC") {
+				if (pHead->no == 2 || pHead->no == 4 || pHead->no == 6 || pHead->no == 8 || pHead->no == 9 || pHead->no == 10)
+					pHead->isColor = false;
+			}
             
             headList.push_back(pHead);
         }

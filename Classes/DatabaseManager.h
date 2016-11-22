@@ -18,6 +18,8 @@ public:
     Color3B color2;
     Color3B color3;
     Color3B color4;
+
+	bool isColor;
 };
 
 class DatabaseManager
