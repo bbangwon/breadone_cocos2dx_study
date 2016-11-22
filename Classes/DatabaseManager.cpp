@@ -240,21 +240,42 @@ void DatabaseManager::insertDB() {
 	}
 
 }
-void DatabaseManager::selectDB(){
-    std::string query = "select * from TB_FACE";
+list<head*> DatabaseManager::selectDB(string table, int no){
+    string query;
+    if(no > 0){
+        char temp[10];
+        sprintf(temp, "%d", no);
+        query = "select * from " + table + " where NO = " + temp;
+    }
+    else if (no < 0){
+        query = "select * from " + table + " order by random() limit 1";
+    }
+    else{
+        query = "select * from " + table;
+    }
     
     sqlite3_stmt *stmt = nullptr;
     _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &stmt, nullptr);
+    list<head *> headList;
     
     if(_result == SQLITE_OK){
         log("selectDB() SUCCESS");
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            int no = sqlite3_column_int(stmt, 0);
-            log("no : %d", no);
+        while(sqlite3_step(stmt) == SQLITE_ROW){
+            head *pHead = new head;
+            pHead->no = sqlite3_column_int(stmt, 0);
+            pHead->image = strdup((char*)sqlite3_column_text(stmt, 1));
+            pHead->position = Point(sqlite3_column_double(stmt, 2), sqlite3_column_double(stmt, 3));
+            pHead->color1 = Color3B(sqlite3_column_int(stmt, 4), sqlite3_column_int(stmt, 5), sqlite3_column_int(stmt, 6));
+            pHead->color2 = Color3B(sqlite3_column_int(stmt, 7), sqlite3_column_int(stmt, 8), sqlite3_column_int(stmt, 9));
+            pHead->color3 = Color3B(sqlite3_column_int(stmt, 10), sqlite3_column_int(stmt, 11), sqlite3_column_int(stmt, 12));
+            pHead->color4 = Color3B(sqlite3_column_int(stmt, 13), sqlite3_column_int(stmt, 14), sqlite3_column_int(stmt, 15));
+            
+            headList.push_back(pHead);
         }
     }
-    else {
-        log("ERROR CODE: %d, ERROR MSG: %s", _result, _errorMSG);
-    }
+    else
+        log("ERROR CODE : %d", _result);
+    
     sqlite3_finalize(stmt);
+    return headList;
 }

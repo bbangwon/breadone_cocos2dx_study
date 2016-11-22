@@ -1,2 +1,2 @@
 #pragma once
-#define DB_INIT true
+#define DB_INIT false
