@@ -8,6 +8,9 @@ USING_NS_CC;
 class CharacterScene : public cocos2d::Layer
 {
 public:
+    CharacterScene();
+    ~CharacterScene();
+    
     static cocos2d::Scene* createScene();
 
     virtual bool init();
@@ -22,6 +25,16 @@ public:
     void onClickRandom(Ref *object);
     void onClickSave(Ref *object);
     void onClickGallery(Ref *object);
+    
+    void setImage(std::string tableName, int rowNo);
+    
+    Sprite *_face;
+    Sprite *_hair1;
+    Sprite *_hair2;
+    Sprite *_eye;
+    Sprite *_mouth;
+    Sprite *_etc;
+    Sprite *_bgStyle;
 };
 
 #endif // __CHARACTERSCENE_H__

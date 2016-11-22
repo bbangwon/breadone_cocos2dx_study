@@ -2,6 +2,20 @@
 #include "DatabaseManager.h"
 #include "DevConf.h"
 
+CharacterScene::CharacterScene(){
+    _face = nullptr;
+    _hair1 = nullptr;
+    _hair2 = nullptr;
+    _eye = nullptr;
+    _mouth = nullptr;
+    _etc = nullptr;
+    _bgStyle = nullptr;
+}
+
+CharacterScene::~CharacterScene(){
+    
+}
+
 Scene* CharacterScene::createScene()
 {
     // 'scene' is an autorelease object
@@ -104,8 +118,85 @@ bool CharacterScene::init()
     auto menu2 = Menu::create(menu2Home, menu2Random, menu2Save, menu2Gallery, nullptr);
     menu2->setPosition(Point::ZERO);
     this->addChild(menu2);
+    
+    setImage("TB_FACE", -1);
+    setImage("TB_HAIR1", -1);
+    setImage("TB_HAIR2", -1);
+    setImage("TB_EYE", -1);
+    setImage("TB_MOUTH", -1);
+    setImage("TB_ETC", -1);
+    setImage("TB_BG", -1);
    
     return true;
+}
+
+void CharacterScene::setImage(std::string tableName, int rowNo){
+    auto headList = DatabaseManager::getInstance()->selectDB(tableName, rowNo);
+    auto head = headList.front();
+    int zOrder = 0;
+    if(tableName == "TB_FACE"){
+        if (_face != nullptr) {
+            _face->removeFromParentAndCleanup(true);
+        }
+        zOrder = 2;
+        _face = Sprite::create(head->image);
+        _face->setPosition(head->position);
+        _characterBg->addChild(_face, zOrder);
+    }
+    else if (tableName == "TB_HAIR1"){
+        if(_hair1 != nullptr){
+            _hair1->removeFromParentAndCleanup(true);
+        }
+        zOrder = 4;
+        _hair1 = Sprite::create(head->image);
+        _hair1->setPosition(head->position);
+        _characterBg->addChild(_hair1, zOrder);
+    }
+    else if (tableName == "TB_HAIR2"){
+        if (_hair2 != nullptr) {
+            _hair2->removeFromParentAndCleanup(true);
+        }
+        zOrder = 1;
+        _hair2 = Sprite::create(head->image);
+        _hair2->setPosition(head->position);
+        _characterBg->addChild(_hair2, zOrder);
+    }
+    else if (tableName == "TB_EYE"){
+        if (_eye != nullptr) {
+            _eye->removeFromParentAndCleanup(true);
+        }
+        zOrder = 3;
+        _eye = Sprite::create(head->image);
+        _eye->setPosition(head->position);
+        _characterBg->addChild(_eye, zOrder);
+    }
+    else if (tableName == "TB_MOUTH"){
+        if (_mouth != nullptr) {
+            _mouth->removeFromParentAndCleanup(true);
+        }
+        zOrder = 3;
+        _mouth = Sprite::create(head->image);
+        _mouth->setPosition(head->position);
+        _characterBg->addChild(_mouth, zOrder);
+    }
+    else if (tableName == "TB_ETC"){
+        if(_etc != nullptr){
+            _etc->removeFromParentAndCleanup(true);
+        }
+        zOrder = 5;
+        _etc = Sprite::create(head->image);
+        _etc->setPosition(head->position);
+        _characterBg->addChild(_etc, zOrder);
+    }
+    else if (tableName == "TB_BG"){
+        if(_bgStyle != nullptr){
+            _bgStyle->removeFromParentAndCleanup(true);
+        }
+        zOrder = 0;
+        _bgStyle = Sprite::create(head->image);
+        _bgStyle->setPosition(head->position);
+        _characterBg->addChild(_bgStyle, zOrder);
+    }
 }
 
 void CharacterScene::onClickMenu(Ref *object){
