@@ -10,6 +10,8 @@ CharacterScene::CharacterScene(){
     _mouth = nullptr;
     _etc = nullptr;
     _bgStyle = nullptr;
+    _balloon = nullptr;
+    _arrow = nullptr;
 }
 
 CharacterScene::~CharacterScene(){
@@ -91,6 +93,14 @@ bool CharacterScene::init()
     menu1->setPosition(Point::ZERO);
     this->addChild(menu1);
     
+    menu1Face->setTag(1);
+    menu1Hair1->setTag(2);
+    menu1Hair2->setTag(3);
+    menu1Eye->setTag(4);
+    menu1Mouth->setTag(5);
+    menu1Etc->setTag(6);
+    menu1Bg->setTag(7);
+    
     float x;
     float y;
     float width;
@@ -126,6 +136,8 @@ bool CharacterScene::init()
     setImage("TB_MOUTH", -1, -1);
     setImage("TB_ETC", -1, -1);
     setImage("TB_BG", -1, -1);
+    
+    setBalloon(1);
    
     return true;
 }
@@ -238,14 +250,23 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
 
 void CharacterScene::onClickMenu(Ref *object){
     log("onClickMenu");
+    setBalloon(((Node *)object)->getTag());
 }
 
 void CharacterScene::onClickHome(Ref *object){
     log("onClickHome");
+    Director::getInstance()->popScene();
 }
 
 void CharacterScene::onClickRandom(Ref *object){
     log("onClickRandom");
+    setImage("TB_FACE", -1, -1);
+    setImage("TB_HAIR1", -1, -1);
+    setImage("TB_HAIR2", -1, -1);
+    setImage("TB_EYE", -1, -1);
+    setImage("TB_MOUTH", -1, -1);
+    setImage("TB_ETC", -1, -1);
+    setImage("TB_BG", -1, -1);
 }
 
 void CharacterScene::onClickSave(Ref *object){
@@ -254,4 +275,43 @@ void CharacterScene::onClickSave(Ref *object){
 
 void CharacterScene::onClickGallery(Ref *object){
     log("onClickGallery");
+}
+
+void CharacterScene::setBalloon(int position){
+    if(_arrow == nullptr){
+        auto winSize = Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
+        _balloon = Sprite::create("box_list.png");
+        _balloon->setPosition(Point(winSize.width / 2, 75));
+        this->addChild(_balloon, 1);
+        
+        _arrow = Sprite::create("box_list2.png");
+        _arrow->setAnchorPoint(Point(0.5, 0));
+        _balloon->addChild(_arrow);
+    }
+    
+    Point arrowPoint;
+    switch (position) {
+        case 1:
+            arrowPoint = Point(22, _balloon->getContentSize().height);
+            break;
+        case 2:
+            arrowPoint = Point(68, _balloon->getContentSize().height);
+            break;
+        case 3:
+            arrowPoint = Point(113, _balloon->getContentSize().height);
+            break;
+        case 4:
+            arrowPoint = Point(158, _balloon->getContentSize().height);
+            break;
+        case 5:
+            arrowPoint = Point(203, _balloon->getContentSize().height);
+            break;
+        case 6:
+            arrowPoint = Point(248, _balloon->getContentSize().height);
+            break;
+        case 7:
+            arrowPoint = Point(293, _balloon->getContentSize().height);
+            break;
+    }
+    _arrow->setPosition(arrowPoint);
 }

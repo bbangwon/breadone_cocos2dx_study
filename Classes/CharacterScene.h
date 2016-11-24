@@ -35,6 +35,10 @@ public:
     Sprite *_mouth;
     Sprite *_etc;
     Sprite *_bgStyle;
+    
+    void setBalloon(int position);
+    Sprite *_arrow;
+    Sprite *_balloon;
 };
 
 #endif // __CHARACTERSCENE_H__
