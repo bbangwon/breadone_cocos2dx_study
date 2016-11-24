@@ -26,7 +26,7 @@ public:
     void onClickSave(Ref *object);
     void onClickGallery(Ref *object);
     
-    void setImage(std::string tableName, int rowNo);
+    void setImage(std::string tableName, int rowNo, int colorNo);
     
     Sprite *_face;
     Sprite *_hair1;

@@ -119,18 +119,18 @@ bool CharacterScene::init()
     menu2->setPosition(Point::ZERO);
     this->addChild(menu2);
     
-    setImage("TB_FACE", -1);
-    setImage("TB_HAIR1", -1);
-    setImage("TB_HAIR2", -1);
-    setImage("TB_EYE", -1);
-    setImage("TB_MOUTH", -1);
-    setImage("TB_ETC", -1);
-    setImage("TB_BG", -1);
+    setImage("TB_FACE", -1, -1);
+    setImage("TB_HAIR1", -1, -1);
+    setImage("TB_HAIR2", -1, -1);
+    setImage("TB_EYE", -1, -1);
+    setImage("TB_MOUTH", -1, -1);
+    setImage("TB_ETC", -1, -1);
+    setImage("TB_BG", -1, -1);
    
     return true;
 }
 
-void CharacterScene::setImage(std::string tableName, int rowNo){
+void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
     auto headList = DatabaseManager::getInstance()->selectDB(tableName, rowNo);
     auto head = headList.front();
     int zOrder = 0;
@@ -197,6 +197,43 @@ void CharacterScene::setImage(std::string tableName, int rowNo){
         _bgStyle->setPosition(head->position);
         _characterBg->addChild(_bgStyle, zOrder);
     }
+    if(head->isColor){
+        Color3B color;
+        if(colorNo < 0){
+            srand(time(nullptr));
+            colorNo = rand() % 4 + 1;
+        }
+        switch (colorNo) {
+            case 1:
+                color = head->color1;
+                break;
+            case 2:
+                color = head->color2;
+                break;
+            case 3:
+                color = head->color3;
+                break;
+            case 4:
+                color = head->color4;
+                break;
+        }
+        if(tableName == "TB_FACE")
+            _face->setColor(color);
+        else if (tableName == "TB_HAIR1")
+            _hair1->setColor(color);
+        else if (tableName == "TB_HAIR2")
+            _hair2->setColor(color);
+        else if (tableName == "TB_EYE")
+            _eye->setColor(color);
+        else if (tableName == "TB_MOUTH")
+            _mouth->setColor(color);
+        else if (tableName == "TB_ETC")
+            _etc->setColor(color);
+        else if (tableName == "TB_BG")
+            _bgStyle->setColor(color);
+        
+    }
+    
 }
 
 void CharacterScene::onClickMenu(Ref *object){
