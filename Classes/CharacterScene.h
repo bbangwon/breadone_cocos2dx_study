@@ -2,8 +2,10 @@
 #define __CHARACTER_SCENE_H__
 
 #include "cocos2d.h"
+#include "cocos-ext.h"
 
 USING_NS_CC;
+USING_NS_CC_EXT;
 
 class CharacterScene : public cocos2d::Layer
 {
@@ -39,6 +41,9 @@ public:
     void setBalloon(int position);
     Sprite *_arrow;
     Sprite *_balloon;
+    
+    ScrollView *_scrollView;
+    void setSubMenuItem(int position);
 };
 
 #endif // __CHARACTERSCENE_H__

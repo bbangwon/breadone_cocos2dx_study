@@ -12,6 +12,7 @@ CharacterScene::CharacterScene(){
     _bgStyle = nullptr;
     _balloon = nullptr;
     _arrow = nullptr;
+    _scrollView = nullptr;
 }
 
 CharacterScene::~CharacterScene(){
@@ -314,4 +315,41 @@ void CharacterScene::setBalloon(int position){
             break;
     }
     _arrow->setPosition(arrowPoint);
+    
+    if(_scrollView != nullptr)
+        _scrollView->removeFromParentAndCleanup(true);
+    
+    auto layer = LayerColor::create(Color4B(0, 0, 255, 255), 500, _balloon->getContentSize().height);
+    _scrollView = ScrollView::create(_balloon->getContentSize(), layer);
+    
+    _scrollView->setDirection(ScrollView::Direction::HORIZONTAL);
+    _balloon->addChild(_scrollView);
+    setSubMenuItem(position);
+}
+
+void CharacterScene::setSubMenuItem(int position){
+    std::string table;
+    switch (position) {
+        case 1:
+            table = "TB_FACE";
+            break;
+        case 2:
+            table = "TB_HAIR1";
+            break;
+        case 3:
+            table = "TB_HAIR2";
+            break;
+        case 4:
+            table = "TB_EYE";
+            break;
+        case 5:
+            table = "TB_MOUTH" ;
+            break;
+        case 6:
+            table = "TB_ETC";
+            break;
+        case 7:
+            table = "TB_BG";
+            break;
+    }
 }
