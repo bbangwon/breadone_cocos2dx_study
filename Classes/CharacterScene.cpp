@@ -319,7 +319,7 @@ void CharacterScene::setBalloon(int position){
     if(_scrollView != nullptr)
         _scrollView->removeFromParentAndCleanup(true);
     
-    auto layer = LayerColor::create(Color4B(0, 0, 255, 255), 500, _balloon->getContentSize().height);
+    auto layer = LayerColor::create(Color4B(0, 0, 0, 0), 500, _balloon->getContentSize().height);
     _scrollView = ScrollView::create(_balloon->getContentSize(), layer);
     
     _scrollView->setDirection(ScrollView::Direction::HORIZONTAL);
@@ -352,4 +352,31 @@ void CharacterScene::setSubMenuItem(int position){
             table = "TB_BG";
             break;
     }
+    auto headList = DatabaseManager::getInstance()->selectDB(table, 0);
+    Vector<MenuItem *> itemArray;
+    int listCnt = headList.size();
+    float iconWidth = 0;
+    
+    for(int i=0;i<listCnt;i++){
+        auto head = headList.front();
+        char icon[50];
+        sprintf(icon, "i_%s", head->image);
+        
+        auto item_img = Sprite::create(icon);
+        if(iconWidth <= 0){
+            iconWidth = item_img->getContentSize().width;
+        }
+        auto item = MenuItemSprite::create(item_img, nullptr);
+        item->setAnchorPoint(Point(0, 0.5));
+        item->setPosition(Point(i * item_img->getContentSize().width + 5 * i, _scrollView->getContentSize().height / 2));
+        itemArray.pushBack(item);
+        headList.pop_front();
+    }
+    auto menu = Menu::createWithArray(itemArray);
+    menu->setPosition(Point::ZERO);
+    _scrollView->getContainer()->setLocalZOrder(-1);
+    auto ContainerSize = Size(listCnt * iconWidth + 5 * (listCnt - 1), _scrollView->getContainer()->getContentSize().height);
+    _scrollView->getContainer()->setContentSize(ContainerSize);
+    _scrollView->getContainer()->addChild(menu);
+
 }
