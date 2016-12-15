@@ -1,6 +1,8 @@
 #include "CharacterScene.h"
 #include "DatabaseManager.h"
 #include "DevConf.h"
+#include "ColorPopup.h"
+
 
 CharacterScene::CharacterScene(){
     _face = nullptr;
@@ -320,9 +322,14 @@ void CharacterScene::setBalloon(int position){
         _scrollView->removeFromParentAndCleanup(true);
     
     auto layer = LayerColor::create(Color4B(0, 0, 0, 0), 500, _balloon->getContentSize().height);
-    _scrollView = ScrollView::create(_balloon->getContentSize(), layer);
+    _scrollView = ui::ScrollView::create();
     
-    _scrollView->setDirection(ScrollView::Direction::HORIZONTAL);
+    _scrollView->setContentSize(_balloon->getContentSize());
+    _scrollView->setInnerContainerSize(layer->getContentSize());
+    _scrollView->setScrollBarEnabled(false);
+    
+    _scrollView->setDirection(ui::ScrollView::Direction::HORIZONTAL);
+
     _balloon->addChild(_scrollView);
     setSubMenuItem(position);
 }
@@ -352,8 +359,8 @@ void CharacterScene::setSubMenuItem(int position){
             table = "TB_BG";
             break;
     }
+    _currentTableName = table;
     auto headList = DatabaseManager::getInstance()->selectDB(table, 0);
-    Vector<MenuItem *> itemArray;
     int listCnt = headList.size();
     float iconWidth = 0;
     
@@ -362,21 +369,29 @@ void CharacterScene::setSubMenuItem(int position){
         char icon[50];
         sprintf(icon, "i_%s", head->image);
         
-        auto item_img = Sprite::create(icon);
-        if(iconWidth <= 0){
-            iconWidth = item_img->getContentSize().width;
-        }
-        auto item = MenuItemSprite::create(item_img, nullptr);
+        auto item = ui::Button::create(icon);
+        item->setFocused(false);
+        iconWidth = item->getContentSize().width;
+        item->addTouchEventListener(CC_CALLBACK_2(CharacterScene::showColorPopup, this));
+        
+        item->setTag(head->no);
         item->setAnchorPoint(Point(0, 0.5));
-        item->setPosition(Point(i * item_img->getContentSize().width + 5 * i, _scrollView->getContentSize().height / 2));
-        itemArray.pushBack(item);
+        item->setPosition(Point(i * iconWidth + 5 * i, _scrollView->getInnerContainerSize().height / 2));
+        _scrollView->addChild(item);
         headList.pop_front();
     }
-    auto menu = Menu::createWithArray(itemArray);
-    menu->setPosition(Point::ZERO);
-    _scrollView->getContainer()->setLocalZOrder(-1);
-    auto ContainerSize = Size(listCnt * iconWidth + 5 * (listCnt - 1), _scrollView->getContainer()->getContentSize().height);
-    _scrollView->getContainer()->setContentSize(ContainerSize);
-    _scrollView->getContainer()->addChild(menu);
+    
+    auto ContainerSize = Size(listCnt * iconWidth + 5 * (listCnt - 1), _scrollView->getInnerContainerSize().height);
+    _scrollView->setInnerContainerSize(ContainerSize);
+}
 
+void CharacterScene::showColorPopup(Ref *object, ui::Widget::TouchEventType type){
+    if(type == ui::Widget::TouchEventType::ENDED)
+    {
+        auto node = ((Node *)object);
+        log("tableName : %s, tag : %d", _currentTableName.c_str(), node->getTag());
+            
+        auto popup = ColorPopup::create(_currentTableName, node->getTag());
+        this->addChild(popup, 10);
+    }
 }

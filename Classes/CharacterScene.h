@@ -2,10 +2,9 @@
 #define __CHARACTER_SCENE_H__
 
 #include "cocos2d.h"
-#include "cocos-ext.h"
+#include "ui/cocosGUI.h"
 
 USING_NS_CC;
-USING_NS_CC_EXT;
 
 class CharacterScene : public cocos2d::Layer
 {
@@ -42,8 +41,11 @@ public:
     Sprite *_arrow;
     Sprite *_balloon;
     
-    ScrollView *_scrollView;
+    ui::ScrollView *_scrollView;
     void setSubMenuItem(int position);
+    
+    std::string _currentTableName;
+    void showColorPopup(Ref *object, ui::Widget::TouchEventType type);
 };
 
 #endif // __CHARACTERSCENE_H__
