@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "ui/cocosGUI.h"
+#include "DatabaseManager.h"
 
 USING_NS_CC;
 
@@ -46,6 +47,8 @@ public:
     
     std::string _currentTableName;
     void showColorPopup(Ref *object, ui::Widget::TouchEventType type);
+    
+    character *_characterInfo;
 };
 
 #endif // __CHARACTERSCENE_H__

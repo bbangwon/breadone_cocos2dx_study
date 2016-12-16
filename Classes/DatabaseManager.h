@@ -22,6 +22,25 @@ public:
 	bool isColor;
 };
 
+struct character
+{
+public:
+    int headNo;
+    int headColorNo;
+    int hair1No;
+    int hair1ColorNo;
+    int hair2No;
+    int hair2ColorNo;
+    int eyeNo;
+    int eyeColorNo;
+    int mouthNo;
+    int mouthColorNo;
+    int etcNo;
+    int etcColorNo;
+    int bgNo;
+    int bgColorNo;
+};
+
 class DatabaseManager
 {
 private:
@@ -41,5 +60,8 @@ public:
     void insertDB();
     
     list<head*> selectDB(string table, int no);
+    
+    void insertCharacterDB(character *characterInfo);
+    void deleteCharacterDB(int no);
 };
 

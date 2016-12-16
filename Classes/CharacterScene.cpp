@@ -15,10 +15,12 @@ CharacterScene::CharacterScene(){
     _balloon = nullptr;
     _arrow = nullptr;
     _scrollView = nullptr;
+    
+    _characterInfo = new character;
 }
 
 CharacterScene::~CharacterScene(){
-    
+    delete _characterInfo;
 }
 
 Scene* CharacterScene::createScene()
@@ -157,6 +159,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _face = Sprite::create(head->image);
         _face->setPosition(head->position);
         _characterBg->addChild(_face, zOrder);
+        
+        _characterInfo->headNo = head->no;
     }
     else if (tableName == "TB_HAIR1"){
         if(_hair1 != nullptr){
@@ -166,6 +170,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _hair1 = Sprite::create(head->image);
         _hair1->setPosition(head->position);
         _characterBg->addChild(_hair1, zOrder);
+        
+        _characterInfo->hair1No = head->no;
     }
     else if (tableName == "TB_HAIR2"){
         if (_hair2 != nullptr) {
@@ -175,6 +181,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _hair2 = Sprite::create(head->image);
         _hair2->setPosition(head->position);
         _characterBg->addChild(_hair2, zOrder);
+        
+        _characterInfo->hair2No = head->no;
     }
     else if (tableName == "TB_EYE"){
         if (_eye != nullptr) {
@@ -184,6 +192,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _eye = Sprite::create(head->image);
         _eye->setPosition(head->position);
         _characterBg->addChild(_eye, zOrder);
+        
+        _characterInfo->eyeNo = head->no;
     }
     else if (tableName == "TB_MOUTH"){
         if (_mouth != nullptr) {
@@ -193,6 +203,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _mouth = Sprite::create(head->image);
         _mouth->setPosition(head->position);
         _characterBg->addChild(_mouth, zOrder);
+        
+        _characterInfo->mouthNo = head->no;
     }
     else if (tableName == "TB_ETC"){
         if(_etc != nullptr){
@@ -202,6 +214,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _etc = Sprite::create(head->image);
         _etc->setPosition(head->position);
         _characterBg->addChild(_etc, zOrder);
+        
+        _characterInfo->etcNo = head->no;
     }
     else if (tableName == "TB_BG"){
         if(_bgStyle != nullptr){
@@ -211,6 +225,8 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
         _bgStyle = Sprite::create(head->image);
         _bgStyle->setPosition(head->position);
         _characterBg->addChild(_bgStyle, zOrder);
+        
+        _characterInfo->bgNo = head->no;
     }
     if(head->isColor){
         Color3B color;
@@ -232,20 +248,34 @@ void CharacterScene::setImage(std::string tableName, int rowNo, int colorNo){
                 color = head->color4;
                 break;
         }
-        if(tableName == "TB_FACE")
+        if(tableName == "TB_FACE"){
             _face->setColor(color);
-        else if (tableName == "TB_HAIR1")
+            _characterInfo->headColorNo = colorNo;
+        }
+        else if (tableName == "TB_HAIR1"){
             _hair1->setColor(color);
-        else if (tableName == "TB_HAIR2")
+            _characterInfo->hair1ColorNo = colorNo;
+        }
+        else if (tableName == "TB_HAIR2"){
             _hair2->setColor(color);
-        else if (tableName == "TB_EYE")
+            _characterInfo->hair2ColorNo = colorNo;
+        }
+        else if (tableName == "TB_EYE"){
             _eye->setColor(color);
-        else if (tableName == "TB_MOUTH")
+            _characterInfo->eyeColorNo = colorNo;
+        }
+        else if (tableName == "TB_MOUTH"){
             _mouth->setColor(color);
-        else if (tableName == "TB_ETC")
+            _characterInfo->mouthColorNo = colorNo;
+        }
+        else if (tableName == "TB_ETC"){
             _etc->setColor(color);
-        else if (tableName == "TB_BG")
+            _characterInfo->etcColorNo = colorNo;
+        }
+        else if (tableName == "TB_BG"){
             _bgStyle->setColor(color);
+            _characterInfo->bgColorNo = colorNo;
+        }
         
     }
     
@@ -274,6 +304,7 @@ void CharacterScene::onClickRandom(Ref *object){
 
 void CharacterScene::onClickSave(Ref *object){
     log("onClickSave");
+    DatabaseManager::getInstance()->insertCharacterDB(_characterInfo);
 }
 
 void CharacterScene::onClickGallery(Ref *object){

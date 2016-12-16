@@ -84,21 +84,21 @@ void DatabaseManager::createDB()
 		query += "X double default 0, ";
 		query += "Y double default 0, ";
 
-		query += "COLOR1_R interger default 0, ";
-		query += "COLOR1_G interger default 0, ";
-		query += "COLOR1_B interger default 0, ";
+		query += "COLOR1_R integer default 0, ";
+		query += "COLOR1_G integer default 0, ";
+		query += "COLOR1_B integer default 0, ";
 
-		query += "COLOR2_R interger default 0, ";
-		query += "COLOR2_G interger default 0, ";
-		query += "COLOR2_B interger default 0, ";
+		query += "COLOR2_R integer default 0, ";
+		query += "COLOR2_G integer default 0, ";
+		query += "COLOR2_B integer default 0, ";
 
-		query += "COLOR3_R interger default 0, ";
-		query += "COLOR3_G interger default 0, ";
-		query += "COLOR3_B interger default 0, ";
+		query += "COLOR3_R integer default 0, ";
+		query += "COLOR3_G integer default 0, ";
+		query += "COLOR3_B integer default 0, ";
 
-		query += "COLOR4_R interger default 0, ";
-		query += "COLOR4_G interger default 0, ";
-		query += "COLOR4_B interger default 0";
+		query += "COLOR4_R integer default 0, ";
+		query += "COLOR4_G integer default 0, ";
+		query += "COLOR4_B integer default 0";
 
 		query += ")";
 
@@ -111,6 +111,35 @@ void DatabaseManager::createDB()
 			log("ERROR CODE : %d, ERROR MSG : %s", _result, _errorMSG);
 		}
 	}
+    
+    {
+        string query = "create table if not exists TB_USER_CHARACTER(";
+        query += "NO integer primary key autoincrement, ";
+        
+        query += "HEAD_NO integer not null, ";
+        query += "HEAD_COLOR_NO integer not null, ";
+        query += "HAIR1_NO integer not null, ";
+        query += "HAIR1_COLOR_NO integer not null, ";
+        query += "HAIR2_NO integer not null, ";
+        query += "HAIR2_COLOR_NO integer not null, ";
+        query += "EYE_NO integer not null, ";
+        query += "EYE_COLOR_NO integer not null, ";
+        query += "MOUTH_NO integer not null, ";
+        query += "MOUTH_COLOR_NO integer not null, ";
+        query += "ETC_NO integer not null, ";
+        query += "ETC_COLOR_NO integer not null, ";
+        query += "BG_NO integer not null, ";
+        query += "BG_COLOR_NO integer not null";
+        query += ")";
+        
+        _result = sqlite3_exec(_sqlite, query.c_str(), nullptr, nullptr, &_errorMSG);
+        if(_result == SQLITE_OK)
+        {
+            log("createDB() SUCCESS");
+        }
+        else
+            log("ERROR CODE : %d, ERROR MSG : %s", _result, _errorMSG);
+    }
 }
 void DatabaseManager::insertDB() {
 	{
@@ -288,4 +317,39 @@ list<head*> DatabaseManager::selectDB(string table, int no){
     
     sqlite3_finalize(stmt);
     return headList;
+}
+
+void DatabaseManager::insertCharacterDB(character *characterInfo)
+{
+    string query = "insert into TB_USER_CHARACTER(HEAD_NO, HEAD_COLOR_NO, HAIR1_NO, HAIR1_COLOR_NO, HAIR2_NO, HAIR2_COLOR_NO, EYE_NO, EYE_COLOR_NO, MOUTH_NO, MOUTH_COLOR_NO, ETC_NO, ETC_COLOR_NO, BG_NO, BG_COLOR_NO) ";
+    
+    char temp[255];
+    sprintf(temp, "values (%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)", characterInfo->headNo, characterInfo->headColorNo,
+            characterInfo->hair1No, characterInfo->hair1ColorNo, characterInfo->hair2No, characterInfo->hair2ColorNo, characterInfo->eyeNo,
+            characterInfo->eyeColorNo, characterInfo->mouthNo, characterInfo->mouthColorNo, characterInfo->etcNo, characterInfo->etcColorNo,
+            characterInfo->bgNo, characterInfo->bgColorNo);
+    
+    query += temp;
+    _result = sqlite3_exec(_sqlite, query.c_str(), nullptr, nullptr, &_errorMSG);
+    if(_result == SQLITE_OK){
+        log("insertDB() SUCCESS");
+    }
+    else
+        log("ERROR CODE : %d, ERROR MSG : %s", _result, _errorMSG);
+    
+}
+
+void DatabaseManager::deleteCharacterDB(int no){
+    string query = "delete from TB_USER_CHARACTER ";
+    char temp[20];
+    sprintf(temp, "where NO = %d", no);
+    
+    query += temp;
+    _result = sqlite3_exec(_sqlite, query.c_str(), nullptr, nullptr, &_errorMSG);
+    if(_result == SQLITE_OK)
+    {
+        log("deleteDB() SUCCESS");
+    }
+    else
+        log("ERROR CODE : %d, ERROR MSG : $s", _result, _errorMSG);
 }
