@@ -15,6 +15,11 @@ public:
     bool init(std::string tableName, int no);
     
     void onEnter();
+    
+    std::string _tableName;
+    int _no;
+    
+    void onClickColor(Ref *object);
 };
 
 #endif //__COLORPOPUP_H__

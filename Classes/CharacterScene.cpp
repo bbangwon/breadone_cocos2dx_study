@@ -390,6 +390,14 @@ void CharacterScene::showColorPopup(Ref *object, ui::Widget::TouchEventType type
     {
         auto node = ((Node *)object);
         log("tableName : %s, tag : %d", _currentTableName.c_str(), node->getTag());
+        
+        auto headList = DatabaseManager::getInstance()->selectDB(_currentTableName, node->getTag());
+        auto head = headList.front();
+        
+        if(!head->isColor){
+            setImage(_currentTableName, head->no, -1);
+            return;
+        }
             
         auto popup = ColorPopup::create(_currentTableName, node->getTag());
         this->addChild(popup, 10);
