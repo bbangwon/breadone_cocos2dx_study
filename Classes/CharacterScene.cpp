@@ -2,6 +2,7 @@
 #include "DatabaseManager.h"
 #include "DevConf.h"
 #include "ColorPopup.h"
+#include "TextPopup.h"
 
 
 CharacterScene::CharacterScene(){
@@ -305,6 +306,7 @@ void CharacterScene::onClickRandom(Ref *object){
 void CharacterScene::onClickSave(Ref *object){
     log("onClickSave");
     DatabaseManager::getInstance()->insertCharacterDB(_characterInfo);
+    this->addChild(TextPopup::create("저장이 완료되었습니다.", false, nullptr), 10);
 }
 
 void CharacterScene::onClickGallery(Ref *object){
