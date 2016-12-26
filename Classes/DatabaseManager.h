@@ -61,7 +61,7 @@ public:
     
     list<head*> selectDB(string table, int no);
     
-    void insertCharacterDB(character *characterInfo);
+    int insertCharacterDB(character *characterInfo);
     void deleteCharacterDB(int no);
 };
 

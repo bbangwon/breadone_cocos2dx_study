@@ -319,8 +319,51 @@ list<head*> DatabaseManager::selectDB(string table, int no){
     return headList;
 }
 
-void DatabaseManager::insertCharacterDB(character *characterInfo)
+int DatabaseManager::insertCharacterDB(character *characterInfo)
 {
+    {
+        sqlite3_stmt *pStmt = nullptr;
+        string query = "select count(*) from TB_USER_CHARACTER";
+        _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &pStmt, nullptr);
+        if(_result == SQLITE_OK)
+        {
+            log("selectDB() SUCCESS");
+            if(sqlite3_step(pStmt) == SQLITE_ROW)
+            {
+                int cnt = sqlite3_column_int(pStmt, 0);
+                if(cnt >= 20){
+                    sqlite3_finalize(pStmt);
+                    return 2;
+                }
+            }
+        }
+        sqlite3_finalize(pStmt);
+    }
+    {
+        sqlite3_stmt *pStmt = nullptr;
+        string query = "select count(*) from TB_USER_CHARACTER where ";
+        char temp[500];
+        sprintf(temp, "HEAD_NO = %d AND HEAD_COLOR_NO = %d AND HAIR1_NO = %d AND HAIR1_COLOR_NO = %d AND HAIR2_NO = %d AND HAIR2_COLOR_NO = %d AND EYE_NO = %d AND EYE_COLOR_NO = %d AND MOUTH_NO = %d AND MOUTH_COLOR_NO = %d AND ETC_NO = %d AND ETC_COLOR_NO = %d AND BG_NO = %d AND BG_COLOR_NO = %d",
+                characterInfo->headNo, characterInfo->headColorNo, characterInfo->hair1No, characterInfo->hair1ColorNo, characterInfo->hair2No, characterInfo->hair2ColorNo, characterInfo->eyeNo, characterInfo->eyeColorNo, characterInfo->mouthNo, characterInfo->mouthColorNo, characterInfo->etcNo, characterInfo->etcColorNo, characterInfo->bgNo, characterInfo->bgColorNo);
+        
+        query += temp;
+        _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &pStmt, nullptr);
+        if(_result == SQLITE_OK)
+        {
+            log("selectDB() SUCCESS");
+            if(sqlite3_step(pStmt) == SQLITE_ROW)
+            {
+                int cnt = sqlite3_column_int(pStmt, 0);
+                if(cnt >= 1){
+                    sqlite3_finalize(pStmt);
+                    return 3;
+                }
+            }
+        }
+        sqlite3_finalize(pStmt);
+
+    }
+    
     string query = "insert into TB_USER_CHARACTER(HEAD_NO, HEAD_COLOR_NO, HAIR1_NO, HAIR1_COLOR_NO, HAIR2_NO, HAIR2_COLOR_NO, EYE_NO, EYE_COLOR_NO, MOUTH_NO, MOUTH_COLOR_NO, ETC_NO, ETC_COLOR_NO, BG_NO, BG_COLOR_NO) ";
     
     char temp[255];
@@ -333,9 +376,13 @@ void DatabaseManager::insertCharacterDB(character *characterInfo)
     _result = sqlite3_exec(_sqlite, query.c_str(), nullptr, nullptr, &_errorMSG);
     if(_result == SQLITE_OK){
         log("insertDB() SUCCESS");
+        return 1;
     }
     else
+    {
         log("ERROR CODE : %d, ERROR MSG : %s", _result, _errorMSG);
+        return 0;
+    }
     
 }
 

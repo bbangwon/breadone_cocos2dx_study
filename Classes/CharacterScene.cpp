@@ -3,6 +3,7 @@
 #include "DevConf.h"
 #include "ColorPopup.h"
 #include "TextPopup.h"
+#include "GalleryScene.h"
 
 
 CharacterScene::CharacterScene(){
@@ -305,12 +306,21 @@ void CharacterScene::onClickRandom(Ref *object){
 
 void CharacterScene::onClickSave(Ref *object){
     log("onClickSave");
-    DatabaseManager::getInstance()->insertCharacterDB(_characterInfo);
-    this->addChild(TextPopup::create("저장이 완료되었습니다.", false, nullptr), 10);
+    int result = DatabaseManager::getInstance()->insertCharacterDB(_characterInfo);
+    if(result == 1)
+        this->addChild(TextPopup::create("저장이 완료되었습니다.", false, nullptr), 10);
+    else if(result == 2)
+        this->addChild(TextPopup::create("저장이 실패했습니다.\n저장 가능한 개수를 초과하였습니다.", false, nullptr), 10);
+    else if(result == 3)
+        this->addChild(TextPopup::create("저장이 실패했습니다. \n같은 이미지가 존재합니다.", false, nullptr), 10);
+    else
+        this->addChild(TextPopup::create("저장이 실패했습니다.", false, nullptr), 10);
 }
 
 void CharacterScene::onClickGallery(Ref *object){
     log("onClickGallery");
+    auto scene = GalleryScene::createScene();
+    Director::getInstance()->pushScene(scene);
 }
 
 void CharacterScene::setBalloon(int position){
