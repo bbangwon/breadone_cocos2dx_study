@@ -400,3 +400,49 @@ void DatabaseManager::deleteCharacterDB(int no){
     else
         log("ERROR CODE : %d, ERROR MSG : $s", _result, _errorMSG);
 }
+
+list<character *> DatabaseManager::selectGalleryDB(){
+    list<character *> galleryItemList;
+    string query = "select * from TB_USER_CHARACTER";
+    
+    sqlite3_stmt *pStmt = nullptr;
+    _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &pStmt, nullptr);
+    
+    if(_result == SQLITE_OK)
+    {
+        log("selectDB() SUCCESS");
+        while (sqlite3_step(pStmt) == SQLITE_ROW) {
+            character *item = new character;
+            item->no = sqlite3_column_int(pStmt, 0);
+            
+            item->headNo = sqlite3_column_int(pStmt, 1);
+            item->headColorNo = sqlite3_column_int(pStmt, 2);
+            
+            item->hair1No = sqlite3_column_int(pStmt, 3);
+            item->hair1ColorNo = sqlite3_column_int(pStmt, 4);
+            
+            item->hair2No = sqlite3_column_int(pStmt, 5);
+            item->hair2ColorNo = sqlite3_column_int(pStmt, 6);
+            
+            item->eyeNo = sqlite3_column_int(pStmt, 7);
+            item->eyeColorNo = sqlite3_column_int(pStmt, 8);
+            
+            item->mouthNo = sqlite3_column_int(pStmt, 9);
+            item->mouthColorNo = sqlite3_column_int(pStmt, 10);
+            
+            item->etcNo = sqlite3_column_int(pStmt, 11);
+            item->etcColorNo = sqlite3_column_int(pStmt, 12);
+            
+            item->bgNo = sqlite3_column_int(pStmt, 13);
+            item->bgColorNo = sqlite3_column_int(pStmt, 14);
+            
+            galleryItemList.push_back(item);
+        }
+    }
+    else{
+        log("ERROR CODE : %d", _result);
+    }
+    sqlite3_finalize(pStmt);
+    
+    return galleryItemList;
+}

@@ -21,6 +21,13 @@ public:
     
     void onClickHome(Ref *object);
     void onClickMake(Ref *object);
+    
+    void setItems();
+    cocos2d::Sprite* getImage(std::string tableName, int rowNo, int colorNo);
+    void onClickItemCallback(Ref *object);
+    
+    int _removeNo;
+    void removeItem();
 };
 
 #endif /* GalleryScene_h */

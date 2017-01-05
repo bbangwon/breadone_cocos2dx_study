@@ -25,6 +25,7 @@ public:
 struct character
 {
 public:
+    int no;
     int headNo;
     int headColorNo;
     int hair1No;
@@ -63,5 +64,6 @@ public:
     
     int insertCharacterDB(character *characterInfo);
     void deleteCharacterDB(int no);
+    std::list<character *> selectGalleryDB();
 };
 
