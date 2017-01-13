@@ -446,3 +446,66 @@ list<character *> DatabaseManager::selectGalleryDB(){
     
     return galleryItemList;
 }
+
+int DatabaseManager::checkCount()
+{
+    int cnt = 0;
+    {
+        sqlite3_stmt *pStmt = nullptr;
+        string query = "select count(*) from TB_USER_CHARACTER";
+        _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &pStmt, nullptr);
+        
+        if(_result == SQLITE_OK)
+        {
+            log("selectDB() SUCCESS");
+            if(sqlite3_step(pStmt) == SQLITE_ROW){
+                cnt = sqlite3_column_int(pStmt, 0);
+            }
+        }
+        sqlite3_finalize(pStmt);
+    }
+    return cnt;
+}
+
+character* DatabaseManager::selectRandomGalleryDB()
+{
+    string query = "select * from TB_USER_CHARACTER ORDER BY random() limit 1";
+    sqlite3_stmt *pStmt;
+    _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &pStmt, nullptr);
+    
+    character *item = new character();
+    
+    if(_result == SQLITE_OK) {
+        log("selectDB() SUCCESS");
+        
+        if(sqlite3_step(pStmt) == SQLITE_ROW){
+            item->no = sqlite3_column_int(pStmt, 0);
+            
+            item->headNo = sqlite3_column_int(pStmt, 1);
+            item->headColorNo = sqlite3_column_int(pStmt, 2);
+            
+            item->hair1No = sqlite3_column_int(pStmt, 3);
+            item->hair1ColorNo = sqlite3_column_int(pStmt, 4);
+            
+            item->hair2No = sqlite3_column_int(pStmt, 5);
+            item->hair2ColorNo = sqlite3_column_int(pStmt, 6);
+            
+            item->eyeNo = sqlite3_column_int(pStmt, 7);
+            item->eyeColorNo = sqlite3_column_int(pStmt, 8);
+            
+            item->mouthNo = sqlite3_column_int(pStmt, 9);
+            item->mouthColorNo = sqlite3_column_int(pStmt, 10);
+            
+            item->etcNo = sqlite3_column_int(pStmt, 11);
+            item->etcColorNo = sqlite3_column_int(pStmt, 12);
+            
+            item->bgNo = sqlite3_column_int(pStmt, 13);
+            item->bgColorNo = sqlite3_column_int(pStmt, 14);
+        }
+    }
+    else
+        log("ERROR CODE : %d", _result);
+    
+    sqlite3_finalize(pStmt);
+    return item;
+}

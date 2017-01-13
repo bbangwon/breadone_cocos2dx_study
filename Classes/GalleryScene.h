@@ -23,7 +23,7 @@ public:
     void onClickMake(Ref *object);
     
     void setItems();
-    cocos2d::Sprite* getImage(std::string tableName, int rowNo, int colorNo);
+    static cocos2d::Sprite* getImage(std::string tableName, int rowNo, int colorNo);
     void onClickItemCallback(Ref *object);
     
     int _removeNo;

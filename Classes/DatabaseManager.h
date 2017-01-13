@@ -65,5 +65,8 @@ public:
     int insertCharacterDB(character *characterInfo);
     void deleteCharacterDB(int no);
     std::list<character *> selectGalleryDB();
+    
+    int checkCount();
+    character* selectRandomGalleryDB();
 };
 

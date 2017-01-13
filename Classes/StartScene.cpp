@@ -1,5 +1,8 @@
 #include "StartScene.h"
 #include "CharacterScene.h"
+#include "GameScene.h"
+#include "DatabaseManager.h"
+#include "TextPopup.h"
 
 USING_NS_CC;
 
@@ -75,5 +78,13 @@ bool StartScene::init()
 void StartScene::onClickButton2(Ref *object)
 {
     log("onClickButton2");
+    if(DatabaseManager::getInstance()->checkCount() < 20)
+    {
+        this->addChild(TextPopup::create("저장된 이미지가 20개가 안됩니다.\n이미지를 먼저 생성하세요.", false, nullptr), 99);
+        return;
+    }
+    
+    auto Scene = TransitionCrossFade::create(0.5f, GameScene::createScene());
+    Director::getInstance()->pushScene(Scene);
 }
 
