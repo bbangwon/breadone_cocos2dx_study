@@ -9,6 +9,7 @@
 #include "GalleryScene.h"
 #include "StartScene.h"
 #include "DatabaseManager.h"
+#include "TextPopup.h"
 
 USING_NS_CC;
 
@@ -44,7 +45,7 @@ bool GalleryScene::init()
     menu2->setPosition(Point::ZERO);
     this->addChild(menu2);
     
-    auto galleryLayer = LayerColor::create(Color4B(255, 0, 0, 255), winSize.width, 422);
+    auto galleryLayer = LayerColor::create(Color4B(0, 0, 0, 0), winSize.width, 422);
     galleryLayer->setPosition(Point(0, 48));
     this->addChild(galleryLayer, 0, 1);
     
@@ -86,7 +87,7 @@ void GalleryScene::setItems()
         frame->setPosition(Point(back->getContentSize().width / 2, back->getContentSize().height / 2));
         back->addChild(frame, 6);
         
-        auto MenuItem = MenuItemSprite::create(back, nullptr);
+        auto MenuItem = MenuItemSprite::create(back, nullptr, CC_CALLBACK_1(GalleryScene::onClickItemCallback, this));
         MenuItem->setTag(item->no);
         
         float scale = 55 / back->getContentSize().width;
@@ -148,10 +149,14 @@ void GalleryScene::onClickItemCallback(cocos2d::Ref *object)
 {
     auto MenuItem = (MenuItemSprite*)object;
     log("tag : %d", MenuItem->getTag());
+    
+    _removeNo = MenuItem->getTag();
+    this->addChild(TextPopup::create("삭제하시겠습까?", true, CC_CALLBACK_0(GalleryScene::removeItem, this)), 10);
 }
 void GalleryScene::removeItem()
 {
-    
+    DatabaseManager::getInstance()->deleteCharacterDB(_removeNo);
+    setItems();
 }
 
 void GalleryScene::onClickHome(cocos2d::Ref *object)
