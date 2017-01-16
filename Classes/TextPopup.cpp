@@ -58,7 +58,7 @@ bool TextPopup::init(std::string text, bool isCancelBT, const textPopupCallback 
     this->addChild(back);
     
     auto labelSize = Size(back->getContentSize().width, back->getContentSize().height - 50);
-    auto label = LabelTTF::create(text.c_str(), "Arial", 20, labelSize, TextHAlignment::CENTER);
+    auto label = Label::createWithSystemFont(text.c_str(), "Arial", 20, labelSize, TextHAlignment::CENTER);
     label->setPosition(Point(back->getContentSize().width / 2, back->getContentSize().height / 2));
     label->setColor(Color3B::BLACK);
     back->addChild(label);

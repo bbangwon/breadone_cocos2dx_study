@@ -10,6 +10,8 @@
 #include "GameScene.h"
 #include "DatabaseManager.h"
 #include "GalleryScene.h"
+#include "TextPopup.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -27,6 +29,8 @@ bool GameScene::init()
     {
         return false;
     }
+    
+    CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/Pixel Peeker Polka - slower.mp3", true);
     
     Size winSize = Director::getInstance()->getOpenGLView()->getDesignResolutionSize();
     auto bg = Sprite::create("game_bg.png");
@@ -48,7 +52,7 @@ bool GameScene::init()
     score->setPosition(Point(250, 410));
     this->addChild(score);
     
-    _labelScore = LabelTTF::create("0", "arial", 20);
+    _labelScore = Label::createWithSystemFont("0", "Arial", 20);
     _labelScore->setPosition(Point(score->getContentSize().width / 2, 22));
     score->addChild(_labelScore);
     
@@ -62,6 +66,29 @@ bool GameScene::init()
     setImages();
     setCountDown();
     
+    _timerBG = Sprite::create("gage_bg.png");
+    _timerBG->setPosition(Point(winSize.width / 2, 365));
+    this->addChild(_timerBG);
+    
+    auto progress_sprite = Sprite::create("gage_bar.png");
+    _progressBar = ProgressTimer::create(progress_sprite);
+    _progressBar->setPosition(Point(_timerBG->getContentSize().width / 2, _timerBG->getContentSize().height / 2));
+    
+    _progressBar->setType(ProgressTimer::Type::BAR);
+    _progressBar->setBarChangeRate(Point(1, 0));
+    _progressBar->setMidpoint(Point(0, 0.5f));
+    _progressBar->setPercentage(100);
+    
+    _timerBG->addChild(_progressBar);
+    
+    _labelCountDown = Label::createWithSystemFont("5.0", "Arial", 20);
+    _labelCountDown->setAnchorPoint(Point(0.5f, 0.5f));
+    _labelCountDown->setPosition(Point(_timerBG->getContentSize().width / 2, _timerBG->getContentSize().height / 2));
+    _timerBG->addChild(_labelCountDown);
+    
+    _score = 0;
+    _stage = 1;
+    
     return true;
 }
 
@@ -69,6 +96,8 @@ void GameScene::onClickBack(cocos2d::Ref *object)
 {
     if(_isCountDown)
         return;
+    
+    CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
     
     log("onClickBack");
     Director::getInstance()->popScene();
@@ -80,6 +109,8 @@ void GameScene::setTarget()
         _targetBack->removeFromParentAndCleanup(true);
     
     character *item = DatabaseManager::getInstance()->selectRandomGalleryDB();
+    
+    _targetNo = item->no;
     
     _targetBack = Sprite::create("s_bg_1.png");
     auto head = GalleryScene::getImage("TB_FACE", item->headNo, item->headColorNo);
@@ -141,7 +172,7 @@ void GameScene::setImages()
         frame->setPosition(Point(back->getContentSize().width / 2, back->getContentSize().height / 2));
         back->addChild(frame, 6);
         
-        auto menuItem = MenuItemSprite::create(back, nullptr);
+        auto menuItem = MenuItemSprite::create(back, nullptr, CC_CALLBACK_1(GameScene::onClickCard, this));
         menuItem->setTag(item->no);
         
         float scale = 55 / back->getContentSize().width;
@@ -210,4 +241,84 @@ void GameScene::setCountDown(){
 void GameScene::setCountDownEnd(cocos2d::Ref *object){
     _isCountDown = false;
     ((Node*)object)->removeFromParentAndCleanup(true);
+    
+    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/flip_sound.wav");
+    setTimer();
+}
+
+void GameScene::onClickCard(cocos2d::Ref *object){
+    if(_isCountDown)
+        return;
+    
+    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound/click_sound.wav");
+    auto selectImg = (MenuItemSprite *)object;
+    int clickNo = selectImg->getTag();
+    
+    unschedule(CC_SCHEDULE_SELECTOR(GameScene::updateTimer));
+    _progressBar->stopAllActions();
+    
+    if(_targetNo == clickNo)
+    {
+        _score = _score + (_countDownTimer / 5.0f) * 10000;
+        char scoreChar[50];
+        sprintf(scoreChar, "%d", _score);
+        _labelScore->setString(scoreChar);
+        
+        char resultChar[100];
+        sprintf(resultChar, "성공하였습니다.\n\n%d점을 획득하였습니다.", _score);
+        
+        
+        if(_stage < 3){
+            _stage++;
+            this->addChild(TextPopup::create(resultChar, false, CC_CALLBACK_0(GameScene::nextStage, this)));
+        }
+        else
+        {
+            this->addChild(TextPopup::create(resultChar, false, CC_CALLBACK_0(GameScene::gameOver, this)));
+        }
+    }
+    else
+    {
+        char resultChar[100];
+        sprintf(resultChar, "실패하였습니다.\n\n%d점을 획득하였습니다.", _score);
+        this->addChild(TextPopup::create(resultChar, false, CC_CALLBACK_0(GameScene::gameOver, this)));
+    }
+}
+
+void GameScene::setTimer(){
+    _progressBar->runAction(ProgressFromTo::create(5, 100, 0));
+    
+    _countDownTimer = 5.0f;
+    schedule(CC_SCHEDULE_SELECTOR(GameScene::updateTimer));
+}
+
+void GameScene::updateTimer(float time){
+    _countDownTimer -= time;
+    if(_countDownTimer < 0){
+        _countDownTimer = 0;
+        unschedule(CC_SCHEDULE_SELECTOR(GameScene::updateTimer));
+        _labelCountDown->setString("0.0");
+        
+        char resultChar[100];
+        sprintf(resultChar, "실패하였습니다.\n\n%d점을 획득하였습니다.", _score);
+        this->addChild(TextPopup::create(resultChar, false, CC_CALLBACK_0(GameScene::gameOver, this)));
+    }
+    
+    log("_countDownTimer : %f", _countDownTimer);
+    char str[10] = {0};
+    sprintf(str, "%2.1f", _countDownTimer);
+    _labelCountDown->setString(str);
+}
+
+void GameScene::gameOver() {
+    onClickBack(nullptr);
+}
+
+void GameScene::nextStage() {
+    setTarget();
+    setImages();
+    setCountDown();
+    
+    _progressBar->setPercentage(100);
+    _labelCountDown->setString("5.0");
 }

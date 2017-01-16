@@ -18,7 +18,7 @@ public:
     virtual bool init();
     CREATE_FUNC(GameScene);
     
-    cocos2d::LabelTTF *_labelScore;
+    cocos2d::Label *_labelScore;
     void onClickBack(Ref *object);
     cocos2d::Sprite *_targetBack;
     void setTarget();
@@ -28,6 +28,23 @@ public:
     bool _isCountDown;
     void setCountDown();
     void setCountDownEnd(Ref *object);
+    
+    int _targetNo;
+    void onClickCard(Ref *object);
+    
+    cocos2d::Sprite *_timerBG;
+    cocos2d::ProgressTimer *_progressBar;
+    void setTimer();
+    
+    cocos2d::Label *_labelCountDown;
+    float _countDownTimer;
+    void updateTimer(float time);
+    
+    int _score;
+    void gameOver();
+    
+    int _stage;
+    void nextStage();
     
 };
 
