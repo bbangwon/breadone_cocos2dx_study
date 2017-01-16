@@ -59,7 +59,7 @@ void GalleryScene::setItems()
     auto galleryLayer = (LayerColor *)this->getChildByTag(1);
     galleryLayer->removeAllChildrenWithCleanup(true);
     
-    std::list<character *> galleryList = DatabaseManager::getInstance()->selectGalleryDB();
+    std::list<character *> galleryList = DatabaseManager::getInstance()->selectGalleryDB(false);
     int size = galleryList.size();
     
     Vector<MenuItem *> itemArray;

@@ -22,6 +22,13 @@ public:
     void onClickBack(Ref *object);
     cocos2d::Sprite *_targetBack;
     void setTarget();
+    cocos2d::LayerColor *_imagesBack;
+    void setImages();
+    
+    bool _isCountDown;
+    void setCountDown();
+    void setCountDownEnd(Ref *object);
+    
 };
 
 

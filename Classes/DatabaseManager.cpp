@@ -401,9 +401,12 @@ void DatabaseManager::deleteCharacterDB(int no){
         log("ERROR CODE : %d, ERROR MSG : $s", _result, _errorMSG);
 }
 
-list<character *> DatabaseManager::selectGalleryDB(){
+list<character *> DatabaseManager::selectGalleryDB(bool isRandom){
     list<character *> galleryItemList;
     string query = "select * from TB_USER_CHARACTER";
+    
+    if(isRandom)
+        query += " order by random()";
     
     sqlite3_stmt *pStmt = nullptr;
     _result = sqlite3_prepare_v2(_sqlite, query.c_str(), query.length(), &pStmt, nullptr);
